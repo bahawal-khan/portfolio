@@ -9,7 +9,7 @@ module.exports = {
       args: "run start",
       env: {
         NODE_ENV: "production",
-        PORT: "3000",
+        PORT: "3002",
       },
       instances: 1,
       exec_mode: "fork",
@@ -24,7 +24,7 @@ module.exports = {
       // through the node interpreter.
       interpreter: "none",
       script: ".venv/bin/uvicorn",
-      args: "app.main:app --host 127.0.0.1 --port 8001",
+      args: "app.main:app --host 127.0.0.1 --port 8010",
       instances: 1,
       exec_mode: "fork",
       autorestart: true,

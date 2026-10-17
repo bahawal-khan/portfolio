@@ -20,6 +20,21 @@ export const metadata: Metadata = {
   title: "Bahawal Khan — AI/ML Engineer",
   description:
     "AI/ML Engineer building machine learning, deep learning, NLP, generative AI, RAG, and agentic AI systems.",
+  metadataBase: new URL("https://khanova.tech"),
+  openGraph: {
+    title: "Bahawal Khan — AI/ML Engineer",
+    description:
+      "AI/ML Engineer building machine learning, deep learning, NLP, generative AI, RAG, and agentic AI systems.",
+    url: "https://khanova.tech",
+    siteName: "Bahawal Khan Portfolio",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Bahawal Khan — AI/ML Engineer",
+    description:
+      "AI/ML Engineer building machine learning, deep learning, NLP, generative AI, RAG, and agentic AI systems.",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

@@ -37,6 +37,9 @@ pool = ConnectionPool(
     max_size=5,
     kwargs=_connection_kwargs,
     open=True,
+    check=ConnectionPool.check_connection,
+    max_idle=120,
+    reconnect_timeout=10,
 )
 
 async_pool = AsyncConnectionPool(

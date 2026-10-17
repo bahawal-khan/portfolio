@@ -44,12 +44,12 @@ from langgraph.types import interrupt
 from pydantic import BaseModel
 
 from app.config import settings
-from app.data.links import PORTFOLIO_LINKS
+from app.data.links import PORTFOLIO_LINKS, PROJECT_LINKS, PROJECT_ALIASES, resolve_project_key
 from app.db import get_checkpointer
 from app.email_sender import send_contact_email
 from app.rag import retrieve as rag_retrieve
 from app.rate_limit import check_and_record_contact
-from app.tools import LINK_TOOLS
+from app.tools import LINK_TOOLS, _format_project_line
 
 # ---------------------------------------------------------------------------
 # Persona / hard rules (04_CHATBOT_AGENT_SPEC.md "System prompt constraint")
@@ -191,7 +191,7 @@ _CONTACT_KEYWORDS = (
 _CONTACT_RELAY_VERB_RE = re.compile(
     r"\b(send|email|e-mail|message|notify|tell|contact|forward|relay)\b"
 )
-_CONTACT_TARGET_RE = re.compile(r"\bhim\b|\bbahawal\b(?!'s)")
+_CONTACT_TARGET_RE = re.compile(r"(?<!about )\bhim\b|(?<!about )\bbahawal\b(?!.s)")
 
 # Checked BEFORE _LINK_KEYWORDS/the LLM classifier — the router LLM was
 # observed misclassifying these as "rag" (e.g. "which of those did you just
@@ -216,6 +216,22 @@ class RouteDecision(BaseModel):
     route: Literal["rag", "link_tool", "chitchat", "decline", "contact_request", "meta"]
 
 
+_CHITCHAT_PHRASES = (
+    "thank you", "thanks", "thankyou", "thnx", "thx", "ty",
+    "ok thanks", "okay thanks", "cool thanks", "alright thanks",
+    "great thanks", "nice thanks", "got it thanks",
+)
+
+
+def _is_bare_chitchat(text: str) -> bool:
+    stripped = _PUNCT_RE.sub("", text.lower()).strip()
+    if not stripped:
+        return False
+    return stripped in _CHITCHAT_PHRASES or any(
+        stripped == p or stripped.startswith(p + " ") for p in _CHITCHAT_PHRASES
+    )
+
+
 async def route_query(state: ChatState, config: RunnableConfig) -> dict:
     # Mid contact-request flow (collecting details or an edit after a
     # confirmation) owns the turn regardless of what it looks like on the
@@ -226,6 +242,9 @@ async def route_query(state: ChatState, config: RunnableConfig) -> dict:
     last_user = next((m for m in reversed(state["messages"]) if m.type == "human"), None)
     text = (last_user.content if last_user else "") or ""
     lowered = text.lower()
+
+    if _is_bare_chitchat(text):
+        return {"route": "chitchat"}
 
     if any(kw in lowered for kw in _CONTACT_KEYWORDS):
         return {"route": "contact_request"}
@@ -284,16 +303,47 @@ def route_edge(state: ChatState) -> str:
 # ---------------------------------------------------------------------------
 # RAG: retrieve -> grade_evidence -> generate -> check_grounding
 # ---------------------------------------------------------------------------
+_VAGUE_QUERY_PHRASES = (
+    "short detail", "give me detail", "tell me more", "more detail",
+    "give me info", "give some detail", "more about him", "more about you",
+    "about yourself", "about him", "detail do", "batao",
+    "short info", "line info", "line detail", "quick info", "quick detail",
+    "brief info", "brief detail", "in short", "give me a summary",
+    "give me an overview", "give me overview", "sum up", "summarize him",
+    "summarize yourself", "who is he", "who is bahawal",
+)
+
+
 async def retrieve(state: ChatState, config: RunnableConfig) -> dict:
     last_user = next((m for m in reversed(state["messages"]) if m.type == "human"), None)
     query = (last_user.content if last_user else "") or ""
+    # Vague follow-ups ("give me short detail", "tell me more") carry little
+    # embedding signal on their own and often retrieve nothing — fall back to
+    # a broad overview query so the visitor gets a general answer instead of
+    # a decline.
+    search_query = query
+    lowered_query = query.lower().strip()
+    if len(lowered_query.split()) <= 6 and any(p in lowered_query for p in _VAGUE_QUERY_PHRASES):
+        search_query = "Bahawal Khan background education skills projects career overview"
     # rag_retrieve does blocking torch/psycopg work — keep it off the event loop.
-    results = await asyncio.to_thread(rag_retrieve, query, 4)
+    results = await asyncio.to_thread(rag_retrieve, search_query, 4)
     documents = [
         {"content": content, "score": score, "source": source}
         for content, score, source in results
         if score is not None and score >= 0.3
     ]
+    # General safety net: any short query (<=8 words) that still retrieved
+    # nothing gets one retry against a broad overview query, rather than
+    # relying solely on the keyword list above catching every phrasing.
+    if not documents and search_query == query and len(lowered_query.split()) <= 8:
+        fallback_results = await asyncio.to_thread(
+            rag_retrieve, "Bahawal Khan background education skills projects career overview", 4
+        )
+        documents = [
+            {"content": content, "score": score, "source": source}
+            for content, score, source in fallback_results
+            if score is not None and score >= 0.3
+        ]
     return {"documents": documents}
 
 
@@ -594,6 +644,73 @@ async def _draft_email(raw_message: str, config: RunnableConfig) -> EmailDraft:
 
 
 async def contact_request(state: ChatState, config: RunnableConfig) -> dict:
+    # Detour: mid-flow, the visitor may ask something unrelated (e.g. "what's
+    # his LinkedIn?") instead of answering the pending question. Answer it
+    # inline and re-ask, rather than silently repeating the same prompt.
+    if state.get("contact_stage") == "collecting":
+        last_user = next((m for m in reversed(state["messages"]) if m.type == "human"), None)
+        lowered_last = ((last_user.content if last_user else "") or "").lower()
+
+        _cancel_phrases = (
+            "don't want", "dont want", "no longer want", "not send", "not to send",
+            "cancel", "never mind", "nevermind", "forget it", "stop this",
+            "don't send", "dont send", "do not send",
+        )
+        if any(p in lowered_last for p in _cancel_phrases):
+            return {
+                "contact_stage": "",
+                "contact_name": "",
+                "contact_contact": "",
+                "contact_company": "",
+                "contact_message_raw": "",
+                "contact_message": "",
+                "messages": [AIMessage(content="No problem — I won't send anything. Let me know if there's anything else I can help with.")],
+            }
+
+        kind = None
+        if "linkedin" in lowered_last:
+            kind = "linkedin"
+        elif "github" in lowered_last:
+            kind = "github"
+        elif "resume" in lowered_last or "cv" in lowered_last:
+            kind = "resume"
+        elif "email" in lowered_last and "your email" not in lowered_last and "my email" not in lowered_last:
+            kind = "email"
+
+        missing = []
+        if not state.get("contact_name"):
+            missing.append("your name")
+        if not state.get("contact_contact"):
+            missing.append("an email or phone number to reach you")
+        if not state.get("contact_message_raw"):
+            missing.append("what you'd like him to know")
+
+        if kind:
+            link_value = PORTFOLIO_LINKS.get(kind, "not available")
+            followup = f"Here's his {kind}: {link_value}."
+            if missing:
+                followup += " Now, back to your message to him — could you share " + " and ".join(missing) + "?"
+            return {
+                "contact_stage": "collecting",
+                "messages": [AIMessage(content=followup)],
+            }
+
+        if "project" in lowered_last:
+            matched_alias = next((a for a in PROJECT_ALIASES if a in lowered_last), None)
+            if matched_alias:
+                key = resolve_project_key(matched_alias)
+                info = PROJECT_LINKS.get(key)
+                followup = _format_project_line(info) if info else "Sorry, I could not find that project."
+            else:
+                lines = [_format_project_line(info) for info in PROJECT_LINKS.values()]
+                followup = "Here are his projects:" + chr(10) + chr(10).join(lines)
+            if missing:
+                followup += chr(10) + chr(10) + "Now, back to your message to him - could you share " + " and ".join(missing) + "?"
+            return {
+                "contact_stage": "collecting",
+                "messages": [AIMessage(content=followup)],
+            }
+
     recent = [m for m in state["messages"] if m.type in ("human", "ai")][-6:]
     convo_text = "\n".join(f"{m.type}: {m.content}" for m in recent if getattr(m, "content", ""))
     system = SystemMessage(

@@ -33,9 +33,9 @@ def _format_project_line(info: dict) -> str:
     if info["live_demo"]:
         live = info["live_demo"]
     elif info["live_demo_coming_soon"]:
-        live = f"not deployed yet — coming soon at {info['live_demo_coming_soon']}"
+        live = "still in progress — the live link will be up very soon"
     else:
-        live = "not available yet"
+        live = "not hosted live right now (code, screenshots and details are in the GitHub repo)"
     return f"{info['name']} — {info['pitch']} — GitHub: {github} — Live demo: {live}"
 
 

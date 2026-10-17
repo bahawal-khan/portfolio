@@ -230,7 +230,7 @@ export const projects: Project[] = [
     name: "ShopAgent",
     description:
       "An agent-based shopping workflow designed to simplify product discovery and booking.",
-    status: "Built",
+    status: "Currently Working",
     capabilities: [
       "Agent",
       "Product search",
@@ -250,8 +250,7 @@ export const projects: Project[] = [
       { label: "Human Approval (HITL)" },
       { label: "Action" },
     ],
-    github: "https://github.com/bahawal-khan",
-    liveUrl: "https://shopagent.khanova.tech",
+    github: "https://github.com/bahawal-khan/shopagent",
   },
   {
     slug: "chatmodel",
@@ -276,8 +275,7 @@ export const projects: Project[] = [
       { label: "PostgreSQL / Memory" },
     ],
     datasetStats: [{ label: "External tools", value: "7" }],
-    github: "https://github.com/bahawal-khan",
-    liveUrl: "https://nexor-ai.khanova.tech",
+    github: "https://github.com/bahawal-khan/Nexor-ai",
   },
   {
     slug: "customer-assistant",
@@ -301,8 +299,7 @@ export const projects: Project[] = [
       { label: "Base model", value: "distilbert-base-uncased" },
       { label: "Best val. macro F1", value: "0.9982" },
     ],
-    github: "https://github.com/bahawal-khan",
-    liveUrl: "https://customer-support.khanova.tech",
+    github: "https://github.com/bahawal-khan/ai-customer-support-assistant",
   },
   {
     slug: "plantcare-ai",
@@ -328,8 +325,7 @@ export const projects: Project[] = [
       { label: "Training hardware", value: "CPU-only" },
       { label: "Total training time", value: "~21 hours" },
     ],
-    github: "https://github.com/bahawal-khan",
-    liveUrl: "https://plantcare.khanova.tech",
+    github: "https://github.com/bahawal-khan/plantcare-ai",
   },
   {
     slug: "churnai",
@@ -367,8 +363,7 @@ export const projects: Project[] = [
       { label: "PR-AUC", value: 0.593, display: "0.5930" },
     ],
     metricsNote: "Final test metrics — Random Forest, threshold 0.37.",
-    github: "https://github.com/bahawal-khan",
-    liveUrl: "https://churnai.khanova.tech",
+    github: "https://github.com/bahawal-khan/churn-ai",
   },
 ];
 

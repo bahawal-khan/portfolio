@@ -39,8 +39,8 @@ PORTFOLIO_LINKS = {
 PROJECT_LINKS: dict[str, ProjectLinks] = {
     "chatmodel": {
         "name": "ChatModel",
-        "github": "https://github.com/bahawal-khan",
-        "live_demo": "https://nexor-ai.khanova.tech",
+        "github": "https://github.com/bahawal-khan/Nexor-ai",
+        "live_demo": None,
         "live_demo_coming_soon": None,
         "pitch": (
             "A multimodal agentic AI assistant capable of interacting with users, "
@@ -51,8 +51,8 @@ PROJECT_LINKS: dict[str, ProjectLinks] = {
     },
     "shopagent": {
         "name": "ShopAgent",
-        "github": "https://github.com/bahawal-khan",
-        "live_demo": "https://shopagent.khanova.tech",
+        "github": "https://github.com/bahawal-khan/shopagent",
+        "live_demo": None,
         "live_demo_coming_soon": None,
         "pitch": (
             "An agent-based shopping workflow designed to simplify product "
@@ -63,8 +63,8 @@ PROJECT_LINKS: dict[str, ProjectLinks] = {
     },
     "churnai": {
         "name": "ChurnAI",
-        "github": "https://github.com/bahawal-khan",
-        "live_demo": "https://churnai.khanova.tech",
+        "github": "https://github.com/bahawal-khan/churn-ai",
+        "live_demo": None,
         "live_demo_coming_soon": None,
         "pitch": (
             "An end-to-end machine learning pipeline predicting customer churn, "
@@ -74,8 +74,8 @@ PROJECT_LINKS: dict[str, ProjectLinks] = {
     },
     "customer_assistant": {
         "name": "Customer Assistant",
-        "github": "https://github.com/bahawal-khan",
-        "live_demo": "https://customer-support.khanova.tech",
+        "github": "https://github.com/bahawal-khan/ai-customer-support-assistant",
+        "live_demo": None,
         "live_demo_coming_soon": None,
         "pitch": (
             "An NLP/RAG support system that classifies incoming queries and "
@@ -86,8 +86,8 @@ PROJECT_LINKS: dict[str, ProjectLinks] = {
     },
     "plantcare_ai": {
         "name": "PlantCare AI",
-        "github": "https://github.com/bahawal-khan",
-        "live_demo": "https://plantcare.khanova.tech",
+        "github": "https://github.com/bahawal-khan/plantcare-ai",
+        "live_demo": None,
         "live_demo_coming_soon": None,
         "pitch": (
             "A deep learning model fine-tuned to detect plant diseases from images "
