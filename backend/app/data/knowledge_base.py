@@ -18,7 +18,7 @@ KNOWLEDGE_CHUNKS: list[tuple[str, str]] = [
         "profile",
         "Bahawal Khan is an AI/ML Engineer in progress: a BS Computer "
         "Science (BSCS) student at the University of Lahore (UOL), "
-        "currently in his 7th semester with a CGPA of 3.06. His career "
+        "currently in his 7th semester. His career "
         "target is AI/ML Engineer, with a practical focus on machine "
         "learning, deep learning, NLP, Generative AI, RAG, Self-RAG / "
         "grounded AI, LangChain, LangGraph, Agentic AI, tool calling, "
@@ -28,7 +28,8 @@ KNOWLEDGE_CHUNKS: list[tuple[str, str]] = [
         "education",
         "Education: Bahawal Khan is pursuing a BS Computer Science (BSCS) "
         "degree at the University of Lahore (UOL). He is in his 7th "
-        "semester with a CGPA of 3.06.",
+        "semester. For academic details such as CGPA, please refer to "
+        "his resume or contact him directly.",
     ),
     (
         "career_goal",
