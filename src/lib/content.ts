@@ -250,6 +250,8 @@ export const projects: Project[] = [
       { label: "Human Approval (HITL)" },
       { label: "Action" },
     ],
+    image: "/images/project-shopagent.webp",
+    imageAlt: "ShopAgent home page with product search and featured products",
     github: "https://github.com/bahawal-khan/shopagent",
   },
   {
@@ -275,6 +277,8 @@ export const projects: Project[] = [
       { label: "PostgreSQL / Memory" },
     ],
     datasetStats: [{ label: "External tools", value: "7" }],
+    image: "/images/project-chatmodel.webp",
+    imageAlt: "Nexor AI chat generating an image from a text prompt",
     github: "https://github.com/bahawal-khan/Nexor-ai",
   },
   {
@@ -299,6 +303,8 @@ export const projects: Project[] = [
       { label: "Base model", value: "distilbert-base-uncased" },
       { label: "Best val. macro F1", value: "0.9982" },
     ],
+    image: "/images/project-customer-assistant.webp",
+    imageAlt: "AI Customer Support dashboard with complaint analytics",
     github: "https://github.com/bahawal-khan/ai-customer-support-assistant",
   },
   {
@@ -363,6 +369,8 @@ export const projects: Project[] = [
       { label: "PR-AUC", value: 0.593, display: "0.5930" },
     ],
     metricsNote: "Final test metrics — Random Forest, threshold 0.37.",
+    image: "/images/project-churnai.webp",
+    imageAlt: "ChurnAI prediction page showing churn probability and top reasons",
     github: "https://github.com/bahawal-khan/churn-ai",
   },
 ];
