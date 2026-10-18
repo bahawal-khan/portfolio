@@ -41,7 +41,7 @@ def _format_project_line(info: dict) -> str:
 
 @tool
 def get_project_link(project_name: str) -> str:
-    """Get the pitch, GitHub, and live-demo links for one of Bahawal's 5 projects.
+    """Get the pitch, GitHub, and live-demo links for one of Bahawal's featured projects.
 
     Args:
         project_name: The project name, e.g. "ChatModel", "ShopAgent",
@@ -66,7 +66,7 @@ def list_projects(category: str | None = None) -> str:
     Args:
         category: Optional filter, e.g. "ML", "machine learning", "deep
             learning", "NLP", "agentic AI", "GenAI", "computer vision".
-            Leave empty to list all 5 projects.
+            Leave empty to list all featured projects.
     """
     matches = list(PROJECT_LINKS.values())
     note = ""
