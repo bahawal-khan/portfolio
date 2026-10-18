@@ -9,10 +9,9 @@ import {
 } from "react-icons/lu";
 import type { Project } from "@/lib/content";
 
-// No project screenshots exist yet (see the `image` field comment in
-// lib/content.ts) — each card gets a distinct icon-on-gradient panel
-// instead, keyed by slug, so the zigzag layout still reads as "visual" on
-// one side without inventing photography that doesn't exist.
+// Projects with an `image` (a 16:10 screenshot in /public/images) show it;
+// the others get a distinct icon-on-gradient panel keyed by slug. Both use
+// the same 16:10 frame on every screen size, so a screenshot is never cropped.
 const PROJECT_ICONS: Record<string, IconType> = {
   shopagent: LuBot,
   chatmodel: LuMessageCircle,
@@ -24,7 +23,7 @@ const PROJECT_ICONS: Record<string, IconType> = {
 export function ProjectVisual({ project }: { project: Project }) {
   if (project.image) {
     return (
-      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-border bg-bg-elevated sm:aspect-[16/10]">
+      <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl border border-border bg-bg-elevated">
         <Image
           src={project.image}
           alt={project.imageAlt ?? `${project.name} preview`}
@@ -40,7 +39,7 @@ export function ProjectVisual({ project }: { project: Project }) {
 
   return (
     <div
-      className="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-gradient-to-br from-accent-muted via-bg-elevated to-bg-elevated-2 sm:aspect-[16/10]"
+      className="relative flex aspect-[16/10] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-gradient-to-br from-accent-muted via-bg-elevated to-bg-elevated-2"
       aria-hidden="true"
     >
       <div className="bg-grid absolute inset-0 opacity-60" />
