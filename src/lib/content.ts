@@ -44,7 +44,7 @@ export const hero = {
 export const about = {
   headline: "I build AI systems, not just models.",
   paragraphs: [
-    "I'm Bahawal Khan, a BS Computer Science student at the University of Lahore (UOL), currently in my 7th semester with a CGPA of 3.06. My focus is on Artificial Intelligence and Machine Learning — spanning classical machine learning, deep learning, NLP, transformers, Generative AI and Agentic AI.",
+    "I'm Bahawal Khan, a BS Computer Science student at the University of Lahore (UOL), currently in my 7th semester. My focus is on Artificial Intelligence and Machine Learning — spanning classical machine learning, deep learning, NLP, transformers, Generative AI and Agentic AI.",
     "Alongside AI/ML, I also have hands-on web development experience, building interfaces and APIs with HTML, CSS, JavaScript, React.js, Next.js and FastAPI. I enjoy turning ideas into practical, end-to-end systems that can retrieve information, use tools, maintain context and interact with users.",
   ],
   progression: [
