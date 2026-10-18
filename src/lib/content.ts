@@ -331,6 +331,8 @@ export const projects: Project[] = [
       { label: "Training hardware", value: "CPU-only" },
       { label: "Total training time", value: "~21 hours" },
     ],
+    image: "/images/project-plantcare-ai.webp",
+    imageAlt: "PlantCare AI interface concept: uploaded leaf, Grad-CAM heatmap and disease prediction",
     github: "https://github.com/bahawal-khan/plantcare-ai",
   },
   {
