@@ -5,7 +5,7 @@ import { StatsGrid } from "./StatTile";
 import { about } from "@/lib/content";
 
 const quickFacts = [
-  { label: "CGPA", value: "3.06" },
+  { label: "Projects", value: "5" },
   { label: "Semester", value: "7th" },
   { label: "Program", value: "BS CS" },
 ];
